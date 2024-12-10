@@ -1,4 +1,13 @@
 import random
+import google.generativeai as genai
+import os
+
+# Suppress logging warnings
+os.environ["GRPC_VERBOSITY"] = "ERROR"
+os.environ["GLOG_minloglevel"] = "2"
+
+# Set your OpenAI API key
+api_key = ''
 
 def read_questions_from_file(path):
     with open(path, "r", encoding="utf-8") as file:
@@ -37,6 +46,16 @@ def select_options(options):
 def calculate_score(user_answers, correct_answers):
     return set(user_answers) == set(correct_answers)
 
+def get_explanation(question_text,options, correct_answers):
+    prompt = (
+        f"Explain briefly why the correct answer(s) to this question are: {correct_answers}. "
+        f"The question is: {question_text} {options}"
+    )
+    genai.configure(api_key=api_key)
+    model = genai.GenerativeModel("gemini-1.5-flash")
+    response = model.generate_content(prompt)
+    print(f"\nExplanation: {response.text}")
+
 def main():
     file_path = "README.md"
     questions = read_questions_from_file(file_path)
@@ -44,10 +63,10 @@ def main():
     total_questions = len(questions)
     print(f"The file contains {total_questions} available questions.")
     
-    print("\nDo you want to filter questions by a keyword? (yes/no)")
+    print("\nDo you want to filter questions by a keyword? (y/n)")
     filter_choice = input().strip().lower()
     
-    if filter_choice == "yes":
+    if filter_choice == "y":
         keyword = input("Enter the keyword to filter questions: ").strip()
         filtered_questions = filter_questions_by_keyword(questions, keyword)
         total_filtered = len(filtered_questions)
@@ -82,6 +101,11 @@ def main():
         else:
             print("\n❌ Wrong answer!")
             print(f"The correct answer(s): {', '.join(map(str, correct_answers))}")
+            print("\nDo you want IA explanation? (y/n)")
+            filter_choice = input().strip().lower()
+            if filter_choice == 'y':
+                get_explanation(question, options, correct_answers)
+                
 
         print(f"\n{question_index}/{num_questions}")
         question_index += 1
