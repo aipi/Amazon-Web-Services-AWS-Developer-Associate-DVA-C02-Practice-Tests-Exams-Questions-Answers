@@ -10,7 +10,7 @@ def read_questions_from_file(path):
         lines = question.strip().split("\n")
         question_text = lines[0].strip()
         options = [line.strip().replace("[x]", "[ ]").strip() for line in lines[2:] if line.startswith("-")]
-        correct_answers = [i + 1 for i, line in enumerate(lines[2:]) if "[x]" in line]  # Ajusta índice das respostas
+        correct_answers = [i + 1 for i, line in enumerate(lines[2:]) if "[x]" in line]
         formatted_questions.append((question_text, options, correct_answers))
     
     return formatted_questions
@@ -18,15 +18,15 @@ def read_questions_from_file(path):
 def filter_questions_by_keyword(questions, keyword):
     keyword = keyword.lower()
     return [
-        (q[0], q[1], q[2])  # Mantém formato das perguntas
+        (q[0], q[1], q[2])
         for q in questions
-        if keyword in q[0].lower() or  # Verifica no enunciado
-           any(keyword in option.lower() for option in q[1])  # Verifica nas opções
+        if keyword in q[0].lower() or
+           any(keyword in option.lower() for option in q[1])
     ]
 
 def display_question(index, question, options):
     print(f"\nQuestion {index}: {question}\n")
-    for i, option in enumerate(options, start=1):  # Exibe opções numeradas
+    for i, option in enumerate(options, start=1):
         print(f"{i}. {option}")
 
 def select_options(options):
@@ -38,7 +38,7 @@ def calculate_score(user_answers, correct_answers):
     return set(user_answers) == set(correct_answers)
 
 def main():
-    file_path = "README.md"  # Nome do arquivo contendo as questões
+    file_path = "README.md"
     questions = read_questions_from_file(file_path)
     
     total_questions = len(questions)
