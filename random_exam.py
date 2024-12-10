@@ -51,7 +51,7 @@ def get_explanation(question_text,options, correct_answers):
         f"Explain briefly why the correct answer(s) to this question are: {correct_answers}. "
         f"The question is: {question_text} {options}"
     )
-    genai.configure(api_key=api_key)
+    genai.configure(api_key=os.environ["GEMINI_API_KEY"])
     model = genai.GenerativeModel("gemini-1.5-flash")
     response = model.generate_content(prompt)
     print(f"\nExplanation: {response.text}")
@@ -101,10 +101,10 @@ def main():
         else:
             print("\n❌ Wrong answer!")
             print(f"The correct answer(s): {', '.join(map(str, correct_answers))}")
-            print("\nDo you want IA explanation? (y/n)")
-            filter_choice = input().strip().lower()
-            if filter_choice == 'y':
-                get_explanation(question, options, correct_answers)
+        print("\nDo you want IA explanation? (y/n)")
+        filter_choice = input().strip().lower()
+        if filter_choice == 'y':
+            get_explanation(question, options, correct_answers)
                 
 
         print(f"\n{question_index}/{num_questions}")
