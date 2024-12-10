@@ -5,7 +5,7 @@ import os
 os.environ["GRPC_VERBOSITY"] = "ERROR"
 os.environ["GLOG_minloglevel"] = "2"
 
-errors_file_path = "README.md"
+errors_file_path = "errors.md"
 
 
 def log_failed_answer_formatted(question, options, correct_answers):
@@ -71,7 +71,7 @@ def get_explanation(question_text,options, correct_answers):
     print(f"\n💬 Explanation: {response.text}")
 
 def main():
-    file_path = "errors.md"
+    file_path = "README.md"
     questions = read_questions_from_file(file_path)
     
     total_questions = len(questions)
