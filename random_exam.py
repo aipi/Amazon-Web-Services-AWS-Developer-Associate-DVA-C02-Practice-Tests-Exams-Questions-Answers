@@ -2,12 +2,26 @@ import random
 import google.generativeai as genai
 import os
 
-# Suppress logging warnings
 os.environ["GRPC_VERBOSITY"] = "ERROR"
 os.environ["GLOG_minloglevel"] = "2"
 
-# Set your OpenAI API key
-api_key = ''
+errors_file_path = "README.md"
+
+
+def log_failed_answer_formatted(question, options, correct_answers):
+    options_str = '\n'.join(
+        option.replace('- [ ]', '- [x]') if index + 1 in correct_answers else option
+        for index, option in enumerate(options)
+    )
+    
+    formatted_entry = (
+        f"\n### {question}\n\n"
+        f"{options_str}\n"
+    )
+    
+    with open(errors_file_path, "a", encoding="utf-8") as file:
+        file.write(formatted_entry)
+
 
 def read_questions_from_file(path):
     with open(path, "r", encoding="utf-8") as file:
@@ -57,7 +71,7 @@ def get_explanation(question_text,options, correct_answers):
     print(f"\n💬 Explanation: {response.text}")
 
 def main():
-    file_path = "README.md"
+    file_path = "errors.md"
     questions = read_questions_from_file(file_path)
     
     total_questions = len(questions)
@@ -101,6 +115,7 @@ def main():
         else:
             print("\n❌ Wrong answer!")
             print(f"The correct answer(s): {', '.join(map(str, correct_answers))}")
+            log_failed_answer_formatted(question, options, correct_answers)
         print("\n🤖 Do you want IA explanation? (y/n)")
         filter_choice = input().strip().lower()
         if filter_choice == 'y':
