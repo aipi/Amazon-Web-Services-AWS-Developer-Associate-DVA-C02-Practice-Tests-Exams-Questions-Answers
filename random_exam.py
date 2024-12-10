@@ -15,8 +15,8 @@ def read_questions_from_file(path):
     
     return formatted_questions
 
-def display_question(question, options):
-    print(f"\n{question}\n")
+def display_question(index, question, options):
+    print(f"\nQuestion {index}: {question}\n")
     for i, option in enumerate(options, start=1):  # Display options starting from 1
         print(f"{i}. {option}")
 
@@ -46,22 +46,23 @@ def main():
     
     selected_questions = random.sample(range(total_questions), num_questions)
     score = 0
-    
+    question_index = 1
     for index in selected_questions:
         question, options, correct_answers = questions[index]
-        display_question(question, options)
+        display_question(question_index, question, options)
         
         user_answers = select_options(options)
         is_correct = calculate_score(user_answers, correct_answers)
         
         if is_correct:
-            print("\n✔️ Correct answer!")
+            print("\n✅ Correct answer!")
             score += 1
         else:
             print("\n❌ Wrong answer!")
             print(f"The correct answer(s): {', '.join(map(str, correct_answers))}")
+        question_index += 1
     
-    print(f"\nQuiz finished! You got {score} out of {num_questions} questions correct.")
+    print(f"\nQuiz finished! You got {score} out of {num_questions} questions correct. Total: {num_questions/score * 100}%")
 
 if __name__ == "__main__":
     main()
